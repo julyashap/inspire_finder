@@ -1,8 +1,12 @@
 {% extends "recommendations/base.html" %}
+{% load my_tags %}
 {% block content %}
 <div class="row d-flex justify-content-center align-items-center text-center">
     <div class="col-md-4">
         <h2>{{ object.name }}</h2>
+        {% if object.picture %}
+        <img src="{{ object.picture|media_path }}" class="card-img-top rounded" alt="Картинка">
+        {% endif %}
         <p style="padding-top: 20px">{{ object.description }}</p>
     </div>
 </div>

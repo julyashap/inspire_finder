@@ -24,7 +24,7 @@ class UserDetailView(mixins.LoginRequiredMixin, mixins.UserPassesTestMixin, gene
     model = User
 
     def test_func(self):
-        return self.request.user == self.object
+        return self.request.user == self.get_object()
 
 
 class UserUpdateView(mixins.LoginRequiredMixin, mixins.UserPassesTestMixin, generic.UpdateView):
@@ -32,7 +32,7 @@ class UserUpdateView(mixins.LoginRequiredMixin, mixins.UserPassesTestMixin, gene
     form_class = UserUpdateForm
 
     def test_func(self):
-        return self.request.user == self.object
+        return self.request.user == self.get_object()
 
     def get_success_url(self):
         return reverse('users:user_detail', kwargs={'pk': self.object.pk})
@@ -43,4 +43,4 @@ class UserDeleteView(mixins.LoginRequiredMixin, mixins.UserPassesTestMixin, gene
     success_url = reverse_lazy('recommendations:item_list')
 
     def test_func(self):
-        return self.request.user == self.object
+        return self.request.user == self.get_object()

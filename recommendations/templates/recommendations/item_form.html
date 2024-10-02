@@ -1,0 +1,29 @@
+{% extends 'recommendations/base.html' %}
+{% block content %}
+{% load crispy_forms_tags %}
+<div class="col-12">
+    <div class="row d-flex justify-content-center align-items-center text-center">
+        <div class="col-6">
+            <div class="card">
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        {{ form|crispy }}
+
+                        {% if object.pk %}
+                        <button type="submit" class="btn btn-primary">
+                            Сохранить
+                        </button>
+                        {% else %}
+                        <button type="submit" class="btn btn-primary">
+                            Создать
+                        </button>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

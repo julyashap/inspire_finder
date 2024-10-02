@@ -22,7 +22,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'recommendations',
-    'users'
+    'users',
+
+    'crispy_bootstrap4',
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [
@@ -101,3 +104,10 @@ AUTH_USER_MODEL = 'users.User'
 
 ENABLE_CACHE = bool(os.getenv('ENABLE_CACHE'))
 REDIS_URL = os.getenv('REDIS_URL')
+
+LOGIN_URL = 'users:user_login'
+LOGIN_REDIRECT_URL = 'recommendations:item_list'
+LOGOUT_REDIRECT_URL = 'recommendations:item_list'
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
+CRISPY_TEMPLATE_PACK = "bootstrap4"

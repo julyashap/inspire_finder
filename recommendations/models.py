@@ -1,12 +1,16 @@
 from django.db import models
 from config import settings
 
+NULLABLE = {'null': True, 'blank': True}
+
 
 class Item(models.Model):
     """Модель элемента в системе"""
 
     name = models.CharField(max_length=100, verbose_name='название')
-    description = models.TextField(verbose_name='описание')
+    description = models.TextField(verbose_name='описание', **NULLABLE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='создатель', **NULLABLE)
+    picture = models.ImageField(upload_to='recommendations/', verbose_name='изображение', **NULLABLE)
 
     def __str__(self):
         return f'item {self.name}'

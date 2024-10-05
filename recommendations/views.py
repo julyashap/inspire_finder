@@ -8,6 +8,24 @@ from recommendations.models import Item, Like
 from recommendations.services import collaborative_filtering_alg
 
 
+class UserItemListView(mixins.LoginRequiredMixin, generic.ListView):
+    model = Item
+    template_name = 'recommendations/user_item_list.html'
+
+    def get_queryset(self):
+        self.queryset = Item.objects.filter(user=self.request.user)
+        return super().get_queryset()
+
+
+class UserLikeListView(mixins.LoginRequiredMixin, generic.ListView):
+    model = Item
+    template_name = 'recommendations/user_like_list.html'
+
+    def get_queryset(self):
+        self.queryset = Item.objects.filter(like__user=self.request.user)
+        return super().get_queryset()
+
+
 class ItemListView(generic.ListView):
     model = Item
 
@@ -30,15 +48,6 @@ class ItemListView(generic.ListView):
         if self.request.user.is_authenticated:
             context['user_likes_list'] = Like.objects.filter(user=self.request.user).values_list('item_id', flat=True)
         return context
-
-
-class UserItemListView(mixins.LoginRequiredMixin, generic.ListView):
-    model = Item
-    template_name = 'recommendations/user_item_list.html'
-
-    def get_queryset(self):
-        self.queryset = Item.objects.filter(user=self.request.user)
-        return super().get_queryset()
 
 
 class ItemDetailView(generic.DetailView):
@@ -76,11 +85,20 @@ class ItemDeleteView(mixins.LoginRequiredMixin, mixins.UserPassesTestMixin, gene
         return self.request.user == self.object.user
 
 
+class LikeErrorView(mixins.LoginRequiredMixin, generic.TemplateView):
+    template_name = 'recommanedations/like_error.html'
+
+
 @login_required
 def like_item(request, pk):
     item = Item.objects.get(pk=pk)
+
+    if item.user == request.user:
+        return redirect(reverse('recommendations:like_error'))
+
     like = Like.objects.create(user=request.user, item=item)
     like.save()
+
     return redirect(reverse('recommendations:item_list'))
 
 
@@ -92,15 +110,6 @@ def unlike_item(request, pk):
     return redirect(reverse('recommendations:item_list'))
 
 
-class UserLikeListView(mixins.LoginRequiredMixin, generic.ListView):
-    model = Item
-    template_name = 'recommendations/user_like_list.html'
-
-    def get_queryset(self):
-        self.queryset = Item.objects.filter(like__user=self.request.user)
-        return super().get_queryset()
-
-
 class RecommendedItemView(generic.TemplateView):
     template_name = 'recommendations/item_recommended.html'
 
@@ -108,9 +117,7 @@ class RecommendedItemView(generic.TemplateView):
         context = super().get_context_data(**kwargs)
 
         recommended_items_ids = collaborative_filtering_alg(self.request.user.pk)
-        recommended_items = []
-        for item_id in recommended_items_ids:
-            recommended_items.append(Item.objects.get(pk=item_id))
+        recommended_items = Item.objects.filter(pk__in=recommended_items_ids)
 
         context['object_list'] = recommended_items
         context['user_likes_list'] = Like.objects.filter(user=self.request.user).values_list('item_id', flat=True)

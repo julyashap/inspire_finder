@@ -2,7 +2,9 @@
 {% block content %}
 {% if user.like_set.exists %}
 <div class="text-center">
-    <a style="margin-bottom: 20px" class="btn btn-outline-primary" href="#">Рассчет рекомендаций</a>
+    <a style="margin-bottom: 20px" class="btn btn-outline-primary" href="{% url 'recommendations:item_recommended' %}">
+        Рассчет рекомендаций
+    </a>
 </div>
 {% else %}
 <div class="text-center">

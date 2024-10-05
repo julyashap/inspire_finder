@@ -102,8 +102,15 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'users.User'
 
-ENABLE_CACHE = bool(os.getenv('ENABLE_CACHE'))
-REDIS_URL = os.getenv('REDIS_URL')
+CACHE_ENABLED = bool(os.getenv('CACHE_ENABLED'))
+if CACHE_ENABLED:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.redis.RedisCache",
+            "LOCATION": os.getenv('REDIS_URL'),
+            "TIMEOUT": 300
+        }
+    }
 
 LOGIN_URL = 'users:user_login'
 LOGIN_REDIRECT_URL = 'recommendations:item_list'

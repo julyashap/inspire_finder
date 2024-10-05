@@ -2,7 +2,7 @@ from django.urls import path
 from django.views.decorators.cache import cache_page
 from recommendations.apps import RecommendationsConfig
 from recommendations.views import ItemListView, UserItemListView, ItemDetailView, ItemUpdateView, ItemDeleteView, \
-    ItemCreateView, like_item, unlike_item, UserLikeListView, RecommendedItemView
+    ItemCreateView, like_item, unlike_item, UserLikeListView, RecommendedItemView, LikeErrorView
 
 app_name = RecommendationsConfig.name
 
@@ -16,6 +16,7 @@ urlpatterns = [
     path('item/create/', ItemCreateView.as_view(), name='item_create'),
 
     path('like-item/<int:pk>/', like_item, name='item_like'),
+    path('like-error/', LikeErrorView.as_view(), name='like_error'),
     path('unlike-item/<int:pk>/', unlike_item, name='item_unlike'),
 
     path('user-likes/', UserLikeListView.as_view(), name='user_like_list'),

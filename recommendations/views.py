@@ -5,6 +5,7 @@ from django.urls import reverse_lazy, reverse
 from django.views import generic
 from recommendations.forms import ItemForm
 from recommendations.models import Item, Like
+from recommendations.services import collaborative_filtering_alg
 
 
 class ItemListView(generic.ListView):
@@ -98,3 +99,20 @@ class UserLikeListView(mixins.LoginRequiredMixin, generic.ListView):
     def get_queryset(self):
         self.queryset = Item.objects.filter(like__user=self.request.user)
         return super().get_queryset()
+
+
+class RecommendedItemView(generic.TemplateView):
+    template_name = 'recommendations/item_recommended.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        recommended_items_ids = collaborative_filtering_alg(self.request.user.pk)
+        recommended_items = []
+        for item_id in recommended_items_ids:
+            recommended_items.append(Item.objects.get(pk=item_id))
+
+        context['object_list'] = recommended_items
+        context['user_likes_list'] = Like.objects.filter(user=self.request.user).values_list('item_id', flat=True)
+
+        return context

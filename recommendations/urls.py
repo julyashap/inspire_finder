@@ -20,5 +20,5 @@ urlpatterns = [
 
     path('user-likes/', UserLikeListView.as_view(), name='user_like_list'),
 
-    path('recommendations/', RecommendedItemView.as_view(), name='item_recommended'),
+    path('recommendations/', cache_page(60)(RecommendedItemView.as_view()), name='item_recommended'),
 ]

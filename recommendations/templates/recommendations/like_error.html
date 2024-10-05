@@ -1,0 +1,16 @@
+{% extends "recommendations/base.html" %}
+{% block content %}
+<div class="col-12">
+    <div class="row d-flex justify-content-center align-items-center text-center">
+        <div class="col-6">
+            <div class="card">
+                <div class="card-body">
+                    <p>Вы не можете лайкнуть собственный элемент!</p>
+                    <a class="btn btn-outline-primary" href="{% url 'recommendations:item_list' %}">Вернуться на
+                        главную</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends "recommendations/base.html" %}
+{% block content %}
+<div class="row text-center">
+    {% if object_list %}
+    {% for object in object_list %}
+    <div class="col-3">
+        <div class="card mb-4 box-shadow">
+            <div class="card-header">
+                <h4 class="my-0 font-weight-normal">{{ object.name }}</h4>
+            </div>
+            <div class="card-body">
+                <h5>{{ object.description|slice:100 }}...</h5>
+                <div class="btn-group" role="group">
+                    <a class="btn btn-outline-primary" href="{% url 'recommendations:item_detail' object.pk %}">
+                        Посмотреть
+                    </a>
+                    {% if not object.pk in user_likes_list %}
+                    <a class="btn btn-outline-danger" href="{% url 'recommendations:item_like' object.pk %}">❤</a>
+                    {% else %}
+                    <a class="btn btn-danger" href="{% url 'recommendations:item_unlike' object.pk %}">❤</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div>
+        <p>У вас пока нет рекомендаций, лайкните больше элементов!</p>
+        <a class="btn btn-outline-primary" href="{% url 'recommendations:item_list' %}">Вернуться на главную</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

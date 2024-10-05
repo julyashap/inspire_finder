@@ -23,6 +23,8 @@ INSTALLED_APPS = [
 
     'recommendations',
     'users',
+    'api_recommendations',
+    'api_users',
 
     'crispy_bootstrap4',
     'crispy_forms',

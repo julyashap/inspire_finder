@@ -1,7 +1,8 @@
 from django.urls import path
 from api_recommendations.apps import ApiRecommendationsConfig
 from api_recommendations.views import ItemCreateAPIView, ItemUpdateAPIView, ItemDestroyAPIView, ItemRetrieveAPIView, \
-    ItemListAPIView, UserItemListAPIView, RecommendedItemsView, UserLikeListAPIView, like_item, unlike_item
+    ItemListAPIView, UserItemListAPIView, RecommendedItemsAPIView, UserLikeListAPIView, like_item, unlike_item, \
+    StatisticAPIView
 
 app_name = ApiRecommendationsConfig.name
 
@@ -19,5 +20,7 @@ urlpatterns = [
 
     path('user-likes/', UserLikeListAPIView.as_view(), name='api_user_like_list'),
 
-    path('recommendations/', RecommendedItemsView.as_view(), name='api_item_recommended'),
+    path('recommendations/', RecommendedItemsAPIView.as_view(), name='api_item_recommended'),
+
+    path('statistic/', StatisticAPIView.as_view(), name='api_statistic')
 ]

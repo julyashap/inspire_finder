@@ -14,7 +14,13 @@
                     <a class="btn btn-outline-primary" href="{% url 'recommendations:item_detail' object.pk %}">
                         Посмотреть
                     </a>
-                    <a class="btn btn-danger" href="{% url 'recommendations:item_unlike' object.pk %}">❤</a>
+                    {% if object.count_likes %}
+                    <a class="btn btn-danger" href="{% url 'recommendations:item_unlike' object.pk %}">
+                        {{ object.count_likes }} ❤
+                    </a>
+                    {% else %}
+                    <a class="btn btn-outline-danger" href="{% url 'recommendations:item_unlike' object.pk %}">❤</a>
+                    {% endif %}
                 </div>
             </div>
         </div>

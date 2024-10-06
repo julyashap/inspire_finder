@@ -2,20 +2,21 @@
 {% load my_tags %}
 {% block content %}
 <div class="row d-flex justify-content-center align-items-center text-center">
-    {% if user.avatar %}
+    {% if object.avatar %}
     <div class="col-md-4">
         <img src="{{ object.avatar|media_path }}" class="card-img-top rounded" alt="Фотография пользователя">
     </div>
     {% endif %}
-    <h2>{{ user.first_name }} {{ user.last_name }}</h2>
-    <h5 style="padding-top: 10px">Email: <span class="text-primary">{{ user.email }}</span></h5>
-    {% if user.phone %}
+    <h2>{{ object.first_name }} {{ object.last_name }}</h2>
+    <h5 style="padding-top: 10px">Email: <span class="text-primary">{{ object.email }}</span></h5>
+    {% if current_user == object %}
     <h5 style="padding-top: 10px">Номер телефона: <span class="text-primary">{{ user.phone }}</span></h5>
     {% endif %}
-    {% if user.country %}
-    <h5 style="padding-top: 10px">Страна: <span class="text-primary">{{ user.country }}</span></h5>
+    {% if object.city %}
+    <h5 style="padding-top: 10px">Страна: <span class="text-primary">{{ object.city }}</span></h5>
     {% endif %}
 </div>
+{% if current_user == object %}
 <div class="d-flex justify-content-center align-items-center text-center">
     <a style="margin-top: 15px" href="{% url 'users:user_update' object.pk %}" class="btn btn-primary">Редактировать профиль</a>
 </div>
@@ -26,4 +27,5 @@
                            link-underline-opacity-100-hover">Удалить...</a>
     </p>
 </div>
+{% endif %}
 {% endblock %}

@@ -12,7 +12,7 @@ from api_recommendations.permissions import IsOwner
 from api_recommendations.serializers import LikeRequestSerializer, LikeSerializer, ItemSerializer, \
     PaginatedItemResponseSerializer
 from recommendations.models import Item, Like
-from recommendations.services import collaborative_filtering_alg
+from recommendations.services import collaborative_filtering_alg, NOW
 
 
 class UserItemListAPIView(generics.ListAPIView):
@@ -24,7 +24,7 @@ class UserItemListAPIView(generics.ListAPIView):
     filterset_fields = ('name', 'description')
 
     def get_queryset(self):
-        self.queryset = Item.objects.filter(user=self.request.user)
+        self.queryset = Item.objects.filter(user=self.request.user).order_by('-created_at')
         return super().get_queryset()
 
 
@@ -37,7 +37,10 @@ class UserLikeListAPIView(generics.ListAPIView):
     filterset_fields = ('name', 'description')
 
     def get_queryset(self):
-        self.queryset = Item.objects.filter(like__user=self.request.user)
+        user_likes = Like.objects.filter(user=self.request.user).order_by('-created_at'). \
+            values_list('item_id', flat=True)
+
+        self.queryset = Item.objects.filter(pk__in=user_likes)
         return super().get_queryset()
 
 
@@ -52,9 +55,9 @@ class ItemListAPIView(generics.ListAPIView):
 
     def get_queryset(self):
         if self.request.user.is_authenticated:
-            self.queryset = Item.objects.exclude(user=self.request.user)
+            self.queryset = Item.objects.exclude(user=self.request.user).order_by('-count_likes')
         else:
-            self.queryset = Item.objects.all()
+            self.queryset = Item.objects.order_by('-count_likes')
 
         return super().get_queryset()
 
@@ -69,11 +72,22 @@ class ItemCreateAPIView(generics.CreateAPIView):
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
 
+    def perform_create(self, serializer):
+        item = serializer.save()
+        item.user = self.request.user
+        item.created_at = NOW
+        item.save()
+
 
 class ItemUpdateAPIView(generics.UpdateAPIView):
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
     permission_classes = [IsOwner]
+
+    def perform_update(self, serializer):
+        item = serializer.save()
+        item.updated_at = NOW
+        item.save()
 
 
 class ItemDestroyAPIView(generics.DestroyAPIView):
@@ -100,6 +114,10 @@ def like_item(request):
 
     if item.user != request.user:
         like = Like.objects.create(user=request.user, item=item)
+        like.created_at = NOW
+        item.count_likes += 1
+
+        item.save()
         like.save()
 
         serializer = LikeSerializer(like)
@@ -126,6 +144,9 @@ def unlike_item(request):
     like = Like.objects.filter(user=request.user, item=item)
     like.delete()
 
+    item.count_likes -= 1
+    item.save()
+
     return Response({"Message": "Лайк успешно убран!"}, status=status.HTTP_200_OK)
 
 
@@ -139,7 +160,7 @@ class RecommendedItemsView(APIView):
     )
     def get(self, request):
         recommended_items_ids = collaborative_filtering_alg(request.user.pk)
-        recommended_items = Item.objects.filter(pk__in=recommended_items_ids)
+        recommended_items = Item.objects.filter(pk__in=recommended_items_ids).order_by('-count_likes')
 
         paginator = self.pagination_class()
         paginated_items = paginator.paginate_queryset(recommended_items, request)

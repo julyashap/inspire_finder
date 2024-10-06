@@ -9,11 +9,14 @@
         {% endif %}
         <p style="padding-top: 20px">{{ object.description }}</p>
         {% if object.created_at %}
-        <h5>Дата создания: <span class="text-primary">{{ object.created_at }}</span></h5>
+        <p style="padding-top: 10px">Дата создания: <span class="text-primary">{{ object.created_at }}</span></p>
         {% endif %}
         {% if object.updated_at %}
-        <h5>Дата последнего изменения: <span class="text-primary">{{ object.updated_at }}</span></h5>
+        <p style="padding-top: 10px">Дата последнего изменения:
+            <span class="text-primary">{{ object.updated_at }}</span>
+        </p>
         {% endif %}
+        <p style="padding-top: 10px">Автор: <span class="text-primary">{{ object.user.email }}</span></p>
     </div>
 </div>
 {% endblock %}

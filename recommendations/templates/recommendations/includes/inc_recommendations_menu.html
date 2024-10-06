@@ -16,7 +16,7 @@
         <a class="p-2 btn btn-primary" href="{% url 'users:user_registration' %}">Регистрация</a>
         {% endif %}
         {% if user.like_set.exists %}
-        <a class="p-2 btn btn-outline-primary" href="#">Статистика</a>
+        <a class="p-2 btn btn-outline-primary" href="{% url 'recommendations:statistic' %}">Статистика</a>
         {% endif %}
     </nav>
 </div>

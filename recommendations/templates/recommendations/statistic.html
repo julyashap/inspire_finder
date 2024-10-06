@@ -1,0 +1,58 @@
+{% extends "recommendations/base.html" %}
+{% block content %}
+<div class="row text-center">
+    <h2>Похожие пользователи</h2>
+    {% if same_interest_users %}
+    {% for same_interest_user in same_interest_users %}
+    <div class="col-3">
+        <div class="card mb-4 box-shadow">
+            <div class="card-header">
+                <a class="my-0 font-weight-normal" href="{% url 'users:user_detail' same_interest_user.pk %}">
+                    {{ same_interest_user.email }}
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div>
+        <p>У вас нет пользователей с общими интересами 😔</p>
+    </div>
+    {% endif %}
+    <hr>
+    <h2>Чаще всего рекомендуются</h2>
+    {% for item in most_popular_items %}
+    <div class="col-3">
+        <div class="card mb-4 box-shadow">
+            <div class="card-header">
+                <h4 class="my-0 font-weight-normal">{{ item.name }}</h4>
+            </div>
+            <div class="card-body">
+                <h5>{{ item.description|slice:100 }}...</h5>
+                <div class="btn-group" role="group">
+                    <a class="btn btn-outline-primary" href="{% url 'recommendations:item_detail' item.pk %}">
+                        Посмотреть
+                    </a>
+                    {% if not item.pk in user_likes_list and item.count_likes %}
+                    <a class="btn btn-outline-danger" href="{% url 'recommendations:item_like' item.pk %}">
+                        {{ item.count_likes }} ❤
+                    </a>
+                    {% endif %}
+                    {% if not item.pk in user_likes_list and not item.count_likes %}
+                    <a class="btn btn-outline-danger" href="{% url 'recommendations:item_like' item.pk %}">❤</a>
+                    {% endif %}
+                    {% if item.pk in user_likes_list and item.count_likes %}
+                    <a class="btn btn-danger" href="{% url 'recommendations:item_unlike' item.pk %}">
+                        {{ item.count_likes }} ❤
+                    </a>
+                    {% endif %}
+                    {% if item.pk in user_likes_list and not item.count_likes %}
+                    <a class="btn btn-outline-danger" href="{% url 'recommendations:item_unlike' item.pk %}">❤</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

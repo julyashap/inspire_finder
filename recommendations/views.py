@@ -5,7 +5,8 @@ from django.urls import reverse_lazy, reverse
 from django.views import generic
 from recommendations.forms import ItemForm
 from recommendations.models import Item, Like
-from recommendations.services import collaborative_filtering_alg, NOW
+from recommendations.services import collaborative_filtering_alg, NOW, get_statistics
+from users.models import User
 
 
 class UserItemListView(mixins.LoginRequiredMixin, generic.ListView):
@@ -139,6 +140,23 @@ class RecommendedItemView(generic.TemplateView):
         recommended_items = Item.objects.filter(pk__in=recommended_items_ids).order_by('-count_likes')
 
         context['object_list'] = recommended_items
+        context['user_likes_list'] = Like.objects.filter(user=self.request.user).values_list('item_id', flat=True)
+
+        return context
+
+
+class StatisticView(mixins.LoginRequiredMixin, generic.TemplateView):
+    template_name = 'recommendations/statistic.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        same_interest_users, most_popular_items = get_statistics(self.request.user.pk)
+        same_interest_users = User.objects.filter(pk__in=same_interest_users)
+        most_popular_items = Item.objects.filter(pk__in=most_popular_items)
+
+        context['same_interest_users'] = same_interest_users
+        context['most_popular_items'] = most_popular_items
         context['user_likes_list'] = Like.objects.filter(user=self.request.user).values_list('item_id', flat=True)
 
         return context

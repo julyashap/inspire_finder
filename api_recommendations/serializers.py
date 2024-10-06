@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from api_recommendations.validators import StopWordsValidator
+from api_users.serializers import AnotherUserSerializer
 from recommendations.models import Item, Like
 
 
@@ -25,3 +26,8 @@ class PaginatedItemResponseSerializer(serializers.Serializer):
     next = serializers.CharField(allow_blank=True)
     previous = serializers.CharField(allow_blank=True)
     results = ItemSerializer(many=True)
+
+
+class StatisticSerializer(serializers.Serializer):
+    users = AnotherUserSerializer(many=True)
+    items = ItemSerializer(many=True)

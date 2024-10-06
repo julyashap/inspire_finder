@@ -1,5 +1,11 @@
 import networkx as nx
+import pytz
+from config import settings
+from datetime import datetime
 from recommendations.models import Like
+
+ZONE = pytz.timezone(settings.TIME_ZONE)
+NOW = datetime.now(ZONE)
 
 
 def create_likes_graph():

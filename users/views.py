@@ -20,11 +20,15 @@ class LogoutView(BaseLogoutView):
     pass
 
 
-class UserDetailView(mixins.LoginRequiredMixin, mixins.UserPassesTestMixin, generic.DetailView):
+class UserDetailView(mixins.LoginRequiredMixin, generic.DetailView):
     model = User
 
-    def test_func(self):
-        return self.request.user == self.get_object()
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['current_user'] = self.request.user
+
+        return context
 
 
 class UserUpdateView(mixins.LoginRequiredMixin, mixins.UserPassesTestMixin, generic.UpdateView):

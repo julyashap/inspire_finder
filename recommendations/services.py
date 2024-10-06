@@ -47,13 +47,19 @@ def kNN_alg(graph, user_pk, current_user_items, k):
     return list(set(same_interest_users))[:k]
 
 
-def collaborative_filtering_alg(user_pk, k=3):
-    """Функция реализации алгоритма коллаборативной фильтрации для расчета рекомендаций пользователю"""
-
+def get_same_interest_users(user_pk, k):
     graph = create_likes_graph()
     current_user_items = list(graph.neighbors(user_pk))
 
     same_interest_users = kNN_alg(graph, user_pk, current_user_items, k)
+
+    return graph, current_user_items, same_interest_users
+
+
+def collaborative_filtering_alg(user_pk, k=5):
+    """Функция реализации алгоритма коллаборативной фильтрации для расчета рекомендаций пользователю"""
+
+    graph, current_user_items, same_interest_users = get_same_interest_users(user_pk, k)
 
     recommended_items = []
     for user in same_interest_users:
@@ -62,3 +68,12 @@ def collaborative_filtering_alg(user_pk, k=3):
         recommended_items.extend(user_items)
 
     return list(set(recommended_items))
+
+
+def get_statistics(user_pk, k=10, count_items=10):
+    graph, _, same_interest_users = get_same_interest_users(user_pk, k)
+
+    items = [node for node, attrs in graph.nodes(data=True) if attrs.get('type') == 'item']
+    most_popular_items = page_rank_alg(graph, items)[:count_items]
+
+    return same_interest_users, most_popular_items

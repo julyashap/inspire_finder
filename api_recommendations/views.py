@@ -10,9 +10,10 @@ from rest_framework.views import APIView
 from api_recommendations.paginators import ItemPaginator
 from api_recommendations.permissions import IsOwner
 from api_recommendations.serializers import LikeRequestSerializer, LikeSerializer, ItemSerializer, \
-    PaginatedItemResponseSerializer
+    PaginatedItemResponseSerializer, StatisticSerializer
 from recommendations.models import Item, Like
-from recommendations.services import collaborative_filtering_alg, NOW
+from recommendations.services import collaborative_filtering_alg, NOW, get_statistics
+from users.models import User
 
 
 class UserItemListAPIView(generics.ListAPIView):
@@ -150,7 +151,7 @@ def unlike_item(request):
     return Response({"Message": "Лайк успешно убран!"}, status=status.HTTP_200_OK)
 
 
-class RecommendedItemsView(APIView):
+class RecommendedItemsAPIView(APIView):
     pagination_class = ItemPaginator
 
     @swagger_auto_schema(
@@ -168,3 +169,25 @@ class RecommendedItemsView(APIView):
         serializer = ItemSerializer(paginated_items, many=True)
 
         return paginator.get_paginated_response(serializer.data)
+
+
+class StatisticAPIView(APIView):
+    @swagger_auto_schema(
+        responses={
+            200: StatisticSerializer(),
+        }
+    )
+    def get(self, request):
+        same_interest_users, most_popular_items = get_statistics(request.user.pk)
+
+        same_interest_users = User.objects.filter(pk__in=same_interest_users)
+        most_popular_items = Item.objects.filter(pk__in=most_popular_items)
+
+        statistic_data = {
+            'users': same_interest_users,
+            'items': most_popular_items
+        }
+
+        serializer = StatisticSerializer(statistic_data)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)

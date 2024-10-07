@@ -17,25 +17,20 @@
 </div>
 
 <div class="container">
+
     {% block content %}
     {% endblock %}
-
+    
     <footer class="pt-4 my-md-5 pt-md-5 border-top">
         <div class="row">
-            <div class="col-4 col-md">
-                SkyStore
-                <small class="d-block mb-3 text-muted">&copy; 2023</small>
+            <div class="col-6 col-md">
+                InspireFinder
+                <small class="d-block mb-3 text-muted">&copy; 2024</small>
             </div>
-            <div class="col-4 col-md">
-                <h5>Дополнительно</h5>
-                <ul class="list-unstyled text-small">
-                    <li><a class="text-muted" href="#">Мы пишем</a></li>
-                </ul>
-            </div>
-            <div class="col-4 col-md">
+            <div class="col-6 col-md">
                 <h5>О нас</h5>
                 <ul class="list-unstyled text-small">
-                    <li><a class="text-muted" href="#">Контакты</a></li>
+                    <li><a class="text-muted" href="{% url 'recommendations:contacts' %}">Связаться с нами</a></li>
                 </ul>
             </div>
         </div>

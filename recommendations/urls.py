@@ -3,7 +3,7 @@ from django.views.decorators.cache import cache_page
 from recommendations.apps import RecommendationsConfig
 from recommendations.views import ItemListView, UserItemListView, ItemDetailView, ItemUpdateView, ItemDeleteView, \
     ItemCreateView, like_item, unlike_item, UserLikeListView, RecommendedItemView, LikeErrorView, StatisticView, \
-    CategoryListView
+    CategoryListView, get_contacts
 
 app_name = RecommendationsConfig.name
 
@@ -25,5 +25,7 @@ urlpatterns = [
 
     path('recommendations/', cache_page(60)(RecommendedItemView.as_view()), name='item_recommended'),
 
-    path('statistic/', StatisticView.as_view(), name='statistic')
+    path('statistic/', StatisticView.as_view(), name='statistic'),
+
+    path('contacts/', get_contacts, name='contacts')
 ]

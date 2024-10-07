@@ -10,7 +10,7 @@ app_name = RecommendationsConfig.name
 urlpatterns = [
     path('', CategoryListView.as_view(), name='category_list'),
 
-    path('item/', ItemListView.as_view(), name='item_list'),
+    path('items/<int:pk>/', ItemListView.as_view(), name='item_list'),
     path('item/<int:pk>/', ItemDetailView.as_view(), name='item_detail'),
     path('item/update/<int:pk>/', ItemUpdateView.as_view(), name='item_update'),
     path('item/delete/<int:pk>/', ItemDeleteView.as_view(), name='item_delete'),

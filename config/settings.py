@@ -120,8 +120,8 @@ if CACHE_ENABLED:
     }
 
 LOGIN_URL = 'users:user_login'
-LOGIN_REDIRECT_URL = 'recommendations:item_list'
-LOGOUT_REDIRECT_URL = 'recommendations:item_list'
+LOGIN_REDIRECT_URL = 'recommendations:category_list'
+LOGOUT_REDIRECT_URL = 'recommendations:category_list'
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
 CRISPY_TEMPLATE_PACK = "bootstrap4"

@@ -10,14 +10,19 @@ from rest_framework.views import APIView
 from api_recommendations.paginators import ItemPaginator
 from api_recommendations.permissions import IsOwner
 from api_recommendations.serializers import LikeRequestSerializer, LikeSerializer, ItemSerializer, \
-    PaginatedItemResponseSerializer, StatisticSerializer
-from recommendations.models import Item, Like
+    PaginatedItemResponseSerializer, StatisticSerializer, CategorySerializer, ItemDisplaySerializer
+from recommendations.models import Item, Like, Category
 from recommendations.services import collaborative_filtering_alg, NOW, get_statistics
 from users.models import User
 
 
+class CategoryListAPIView(generics.ListAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+
 class UserItemListAPIView(generics.ListAPIView):
-    serializer_class = ItemSerializer
+    serializer_class = ItemDisplaySerializer
     pagination_class = ItemPaginator
 
     filter_backends = [OrderingFilter, DjangoFilterBackend]
@@ -30,7 +35,7 @@ class UserItemListAPIView(generics.ListAPIView):
 
 
 class UserLikeListAPIView(generics.ListAPIView):
-    serializer_class = ItemSerializer
+    serializer_class = ItemDisplaySerializer
     pagination_class = ItemPaginator
 
     filter_backends = [OrderingFilter, DjangoFilterBackend]
@@ -46,7 +51,7 @@ class UserLikeListAPIView(generics.ListAPIView):
 
 
 class ItemListAPIView(generics.ListAPIView):
-    serializer_class = ItemSerializer
+    serializer_class = ItemDisplaySerializer
     permission_classes = [AllowAny]
     pagination_class = ItemPaginator
 
@@ -65,7 +70,7 @@ class ItemListAPIView(generics.ListAPIView):
 
 class ItemRetrieveAPIView(generics.RetrieveAPIView):
     queryset = Item.objects.all()
-    serializer_class = ItemSerializer
+    serializer_class = ItemDisplaySerializer
     permission_classes = [AllowAny]
 
 
@@ -166,7 +171,7 @@ class RecommendedItemsAPIView(APIView):
         paginator = self.pagination_class()
         paginated_items = paginator.paginate_queryset(recommended_items, request)
 
-        serializer = ItemSerializer(paginated_items, many=True)
+        serializer = ItemDisplaySerializer(paginated_items, many=True)
 
         return paginator.get_paginated_response(serializer.data)
 

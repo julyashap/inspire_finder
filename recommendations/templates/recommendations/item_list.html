@@ -12,10 +12,10 @@
        title="Сначала лайкните что-нибудь!">Рассчет рекомендаций</a>
 </div>
 {% endif %}
-<form method="GET" action="{% url 'recommendations:item_list' %}">
+<form method="GET" action="{% url 'recommendations:item_list' category_pk %}">
     {% csrf_token %}
     <div class="input-group mb-3">
-        <input type="text" class="form-control" name="search">
+        <input type="text" class="form-control" name="search" placeholder="Фильм, сериал, любимая картина...">
         <button type="submit" class="btn btn-primary">Поиск</button>
     </div>
 </form>

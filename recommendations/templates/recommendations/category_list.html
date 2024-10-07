@@ -15,14 +15,14 @@
 <form method="GET" action="{% url 'recommendations:category_list' %}">
     {% csrf_token %}
     <div class="input-group mb-3">
-        <input type="text" class="form-control" name="search">
+        <input type="text" class="form-control" name="search" placeholder="Введите название категории...">
         <button type="submit" class="btn btn-primary">Поиск</button>
     </div>
 </form>
 <div class="row text-center">
     {% if object_list %}
     {% for object in object_list %}
-    <div class="col-3">
+    <div class="col-6">
         <div class="card mb-4 box-shadow">
             <div class="card-header">
                 <h4 class="my-0 font-weight-normal">{{ object.name }}</h4>

@@ -3,6 +3,11 @@
 {% block content %}
 <div class="row d-flex justify-content-center align-items-center text-center">
     <div class="col-md-4">
+        {% if not object.is_published %}
+        <p class="text-info bg-dark pt-1 pb-1" style="margin-top: 10px">
+            Элемент обрабатывается модераторами. Подождите, когда пройдет проверка!
+        </p>
+        {% endif %}
         <h2>{{ object.name }}</h2>
         {% if object.picture %}
         <img src="{{ object.picture|media_path }}" class="card-img-top rounded" alt="Картинка">
@@ -17,9 +22,8 @@
         </p>
         {% endif %}
         <p style="padding-top: 10px">Категория: <span class="text-primary">{{ object.category.name }}</span></p>
+        {% if not object.user.is_staff %}
         <p style="padding-top: 10px">Автор: <span class="text-primary">{{ object.user.email }}</span></p>
-        {% if not object.is_published %}
-        <p style="padding-top: 10px">Статус: <span class="text-primary">В модерации...</span></p>
         {% endif %}
     </div>
 </div>

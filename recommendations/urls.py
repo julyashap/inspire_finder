@@ -2,13 +2,15 @@ from django.urls import path
 from django.views.decorators.cache import cache_page
 from recommendations.apps import RecommendationsConfig
 from recommendations.views import ItemListView, UserItemListView, ItemDetailView, ItemUpdateView, ItemDeleteView, \
-    ItemCreateView, like_item, unlike_item, UserLikeListView, RecommendedItemView, LikeErrorView, StatisticView
+    ItemCreateView, like_item, unlike_item, UserLikeListView, RecommendedItemView, LikeErrorView, StatisticView, \
+    CategoryListView
 
 app_name = RecommendationsConfig.name
 
 urlpatterns = [
-    path('', ItemListView.as_view(), name='item_list'),
+    path('', CategoryListView.as_view(), name='category_list'),
 
+    path('item/', ItemListView.as_view(), name='item_list'),
     path('item/<int:pk>/', ItemDetailView.as_view(), name='item_detail'),
     path('item/update/<int:pk>/', ItemUpdateView.as_view(), name='item_update'),
     path('item/delete/<int:pk>/', ItemDeleteView.as_view(), name='item_delete'),

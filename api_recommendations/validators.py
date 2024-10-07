@@ -13,4 +13,4 @@ class StopWordsValidator:
 
         for stop_word in STOP_WORDS:
             if stop_word in field_content.lower() or field_content.lower() in stop_word:
-                raise ValidationError('Такое название/описание недопустимо!')
+                raise ValidationError(f'Слово {stop_word} недопустимо в сообщении!')

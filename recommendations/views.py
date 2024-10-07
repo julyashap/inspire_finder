@@ -4,9 +4,21 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
 from django.views import generic
 from recommendations.forms import ItemForm
-from recommendations.models import Item, Like
+from recommendations.models import Item, Like, Category
 from recommendations.services import collaborative_filtering_alg, NOW, get_statistics
 from users.models import User
+
+
+class CategoryListView(generic.ListView):
+    model = Category
+
+    def get_queryset(self):
+        query = self.request.GET.get('search')
+
+        if query:
+            self.queryset = Category.objects.filter(name__icontains=query)
+
+        return super().get_queryset()
 
 
 class UserItemListView(mixins.LoginRequiredMixin, generic.ListView):
@@ -23,7 +35,7 @@ class UserLikeListView(mixins.LoginRequiredMixin, generic.ListView):
     template_name = 'recommendations/user_like_list.html'
 
     def get_queryset(self):
-        user_likes = Like.objects.filter(user=self.request.user).order_by('-created_at').\
+        user_likes = Like.objects.filter(user=self.request.user).order_by('-created_at'). \
             values_list('item_id', flat=True)
 
         self.queryset = Item.objects.filter(pk__in=user_likes)
@@ -37,14 +49,27 @@ class ItemListView(generic.ListView):
     def get_queryset(self):
         query = self.request.GET.get('search')
 
+        category_pk = self.kwargs.get('pk')
+        category = Category.objects.get(pk=category_pk)
+
+        category_published_items = Item.objects.filter(category=category).filter(is_published=True)
+
         if self.request.user.is_authenticated:
             if query:
-                self.queryset = Item.objects.filter(name__icontains=query).\
+                self.queryset = category_published_items. \
+                    filter(name__icontains=query). \
                     exclude(user=self.request.user).order_by('-count_likes')
             else:
-                self.queryset = Item.objects.exclude(user=self.request.user).order_by('-count_likes')
-        elif query:
-            self.queryset = Item.objects.filter(name__icontains=query).order_by('-count_likes')
+                self.queryset = category_published_items. \
+                    exclude(user=self.request.user). \
+                    order_by('-count_likes')
+        else:
+            if query:
+                self.queryset = category_published_items. \
+                    filter(name__icontains=query). \
+                    order_by('-count_likes')
+            else:
+                self.queryset = category_published_items
 
         return super().get_queryset()
 

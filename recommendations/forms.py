@@ -8,7 +8,7 @@ class ItemForm(forms.ModelForm):
 
     class Meta:
         model = Item
-        fields = ('name', 'description', 'picture',)
+        fields = ('name', 'description', 'picture', 'category',)
 
     def clean_name(self):
         cleaned_data = self.cleaned_data.get('name')

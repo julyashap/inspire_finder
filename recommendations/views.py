@@ -1,9 +1,11 @@
 from django.contrib.auth import mixins
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect
+from django.core.mail import send_mail
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy, reverse
 from django.views import generic
-from recommendations.forms import ItemForm
+from config import settings
+from recommendations.forms import ItemForm, ContactsForm
 from recommendations.models import Item, Like, Category
 from recommendations.services import collaborative_filtering_alg, NOW, get_statistics
 from users.models import User
@@ -202,3 +204,27 @@ class StatisticView(mixins.LoginRequiredMixin, mixins.UserPassesTestMixin, gener
         context['user_likes_list'] = Like.objects.filter(user=self.request.user).values_list('item_id', flat=True)
 
         return context
+
+
+def get_contacts(request):
+    if request.method == 'POST':
+        form = ContactsForm(request.POST)
+
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            message = form.cleaned_data['message']
+
+            send_mail(
+                f'InspireFinder: сообщение от пользователя',
+                message,
+                email,
+                [settings.EMAIL_HOST_USER],
+                fail_silently=False
+            )
+
+            return redirect(reverse('recommendations:category_list'))
+
+    elif request.method == 'GET':
+        form = ContactsForm()
+
+    return render(request, 'recommendations/contacts.html', {'form': form})

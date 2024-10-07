@@ -16,7 +16,11 @@
             <span class="text-primary">{{ object.updated_at }}</span>
         </p>
         {% endif %}
+        <p style="padding-top: 10px">Категория: <span class="text-primary">{{ object.category.name }}</span></p>
         <p style="padding-top: 10px">Автор: <span class="text-primary">{{ object.user.email }}</span></p>
+        {% if not object.is_published %}
+        <p style="padding-top: 10px">Статус: <span class="text-primary">В модерации...</span></p>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

@@ -24,7 +24,11 @@
                         Удалить
                     </a>
                 </div>
+                {% if object.is_published %}
                 <h6 style="padding-top: 10px">{{ object.count_likes }} ❤</h6>
+                {% else %}
+                <h6 style="padding-top: 10px">Элемент модерируется. Подождите, когда пройдет проверка!</h6>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -32,6 +36,7 @@
     {% else %}
     <div>
         <p>У вас пока нет предпочтений 😔</p>
+        <a class="btn btn-outline-primary" href="{% url 'recommendations:category_list' %}">Вернуться на главную</a>
     </div>
     {% endif %}
 </div>

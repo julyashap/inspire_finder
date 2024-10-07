@@ -140,3 +140,6 @@ if DEBUG:
         'ACCESS_TOKEN_LIFETIME': timedelta(days=30),
         'REFRESH_TOKEN_LIFETIME': timedelta(days=90),
     }
+
+SMSAERO_EMAIL = os.getenv('SMSAERO_EMAIL')
+SMSAERO_API_KEY = os.getenv('SMSAERO_API_KEY')

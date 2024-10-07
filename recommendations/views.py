@@ -75,8 +75,11 @@ class ItemListView(generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
+        context['category_pk'] = self.kwargs.get('pk')
         if self.request.user.is_authenticated:
             context['user_likes_list'] = Like.objects.filter(user=self.request.user).values_list('item_id', flat=True)
+
         return context
 
 
@@ -119,7 +122,7 @@ class ItemDeleteView(mixins.LoginRequiredMixin, mixins.UserPassesTestMixin, gene
     success_url = reverse_lazy('recommendations:user_item_list')
 
     def test_func(self):
-        return self.request.user == self.object.user
+        return self.request.user == self.get_object().user
 
 
 class LikeErrorView(mixins.LoginRequiredMixin, generic.TemplateView):
@@ -128,6 +131,8 @@ class LikeErrorView(mixins.LoginRequiredMixin, generic.TemplateView):
 
 @login_required
 def like_item(request, pk):
+    previous_page = request.META.get('HTTP_REFERER')
+
     item = Item.objects.get(pk=pk)
 
     if item.user == request.user:
@@ -140,11 +145,13 @@ def like_item(request, pk):
     item.save()
     like.save()
 
-    return redirect(reverse('recommendations:item_list'))
+    return redirect(previous_page)
 
 
 @login_required
 def unlike_item(request, pk):
+    previous_page = request.META.get('HTTP_REFERER')
+
     item = Item.objects.get(pk=pk)
     like = Like.objects.filter(user=request.user, item=item)
     like.delete()
@@ -152,11 +159,18 @@ def unlike_item(request, pk):
     item.count_likes -= 1
     item.save()
 
-    return redirect(reverse('recommendations:item_list'))
+    if previous_page == request.build_absolute_uri(reverse('recommendations:statistic')) or \
+            previous_page == request.build_absolute_uri(reverse('recommendations:item_recommended')):
+        return redirect(reverse('recommendations:category_list'))
+
+    return redirect(previous_page)
 
 
-class RecommendedItemView(generic.TemplateView):
+class RecommendedItemView(mixins.LoginRequiredMixin, mixins.UserPassesTestMixin, generic.TemplateView):
     template_name = 'recommendations/item_recommended.html'
+
+    def test_func(self):
+        return self.request.user.like_set.exists()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -170,15 +184,18 @@ class RecommendedItemView(generic.TemplateView):
         return context
 
 
-class StatisticView(mixins.LoginRequiredMixin, generic.TemplateView):
+class StatisticView(mixins.LoginRequiredMixin, mixins.UserPassesTestMixin, generic.TemplateView):
     template_name = 'recommendations/statistic.html'
+
+    def test_func(self):
+        return self.request.user.like_set.exists()
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
         same_interest_users, most_popular_items = get_statistics(self.request.user.pk)
         same_interest_users = User.objects.filter(pk__in=same_interest_users)
-        most_popular_items = Item.objects.filter(pk__in=most_popular_items)
+        most_popular_items = Item.objects.filter(pk__in=most_popular_items).order_by('-count_likes')
 
         context['same_interest_users'] = same_interest_users
         context['most_popular_items'] = most_popular_items

@@ -15,7 +15,7 @@ class ItemForm(forms.ModelForm):
 
         for stop_word in STOP_WORDS:
             if stop_word in cleaned_data.lower() or cleaned_data.lower() in stop_word:
-                raise forms.ValidationError(f'Слово {stop_word} недопустимо в названии!')
+                raise forms.ValidationError(f'Слово "{stop_word}" недопустимо в названии!')
 
         return cleaned_data
 
@@ -24,7 +24,7 @@ class ItemForm(forms.ModelForm):
 
         for stop_word in STOP_WORDS:
             if stop_word in cleaned_data.lower() or cleaned_data.lower() in stop_word:
-                raise forms.ValidationError(f'Слово {stop_word} недопустимо в описании!')
+                raise forms.ValidationError(f'Слово "{stop_word}" недопустимо в описании!')
 
         return cleaned_data
 
@@ -47,6 +47,6 @@ class ContactsForm(forms.Form):
 
         for stop_word in STOP_WORDS:
             if stop_word in cleaned_data.lower() or cleaned_data.lower() in stop_word:
-                raise forms.ValidationError(f'Слово {stop_word} недопустимо в сообщении!')
+                raise forms.ValidationError(f'Слово "{stop_word}" недопустимо в сообщении!')
 
         return cleaned_data

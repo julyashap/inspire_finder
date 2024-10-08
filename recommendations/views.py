@@ -85,8 +85,15 @@ class ItemListView(generic.ListView):
         return context
 
 
-class ItemDetailView(generic.DetailView):
+class ItemDetailView(mixins.UserPassesTestMixin, generic.DetailView):
     model = Item
+
+    def test_func(self):
+        item = self.get_object()
+
+        if not item.is_published:
+            return item.user == self.request.user
+        return True
 
 
 class ItemCreateView(mixins.LoginRequiredMixin, generic.CreateView):

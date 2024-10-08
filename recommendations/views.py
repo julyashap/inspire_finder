@@ -144,7 +144,7 @@ def like_item(request, pk):
 
     item = Item.objects.get(pk=pk)
 
-    if item.user == request.user:
+    if item.user == request.user or Like.objects.get(user=request.user, item=item) or not item.is_published:
         return redirect(reverse('recommendations:like_error'))
 
     like = Like.objects.create(user=request.user, item=item)

@@ -7,7 +7,7 @@ from recommendations.models import Item, Like, Category
 class ItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = Item
-        fields = ('pk', 'name', 'description', 'count_likes', 'created_at', 'updated_at', 'is_published', 'user',)
+        fields = ('pk', 'name', 'description', 'count_likes', 'created_at', 'updated_at', 'user',)
         validators = [StopWordsValidator(field='name'), StopWordsValidator(field='description')]
 
 

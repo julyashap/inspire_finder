@@ -8,7 +8,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from api_recommendations.paginators import ItemPaginator
-from api_recommendations.permissions import IsOwner
+from api_recommendations.permissions import IsOwner, DoesHaveLikes
 from api_recommendations.serializers import LikeRequestSerializer, LikeSerializer, ItemSerializer, \
     PaginatedItemResponseSerializer, StatisticSerializer
 from recommendations.models import Item, Like
@@ -101,7 +101,7 @@ class ItemDestroyAPIView(generics.DestroyAPIView):
     method='POST',
     responses={
         201: LikeSerializer(),
-        403: openapi.Response("Вы не можете лайкать свои элементы!"),
+        403: openapi.Response("Вы не можете лайкать свои элементы и не можете поставить лайк второй раз!"),
     },
     request_body=LikeRequestSerializer()
 )
@@ -112,6 +112,12 @@ def like_item(request):
     item_pk = serializer.validated_data['item']
 
     item = Item.objects.get(pk=item_pk)
+
+    if item.user == request.user or Like.objects.get(user=request.user, item=item):
+        return Response(
+            {"Error": "Вы не можете лайкать свои элементы и не можете поставить лайк второй раз!"},
+            status=status.HTTP_403_FORBIDDEN
+        )
 
     if item.user != request.user:
         like = Like.objects.create(user=request.user, item=item)
@@ -124,8 +130,6 @@ def like_item(request):
         serializer = LikeSerializer(like)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-    return Response({"Error": "Вы не можете лайкать свои элементы!"}, status=status.HTTP_403_FORBIDDEN)
 
 
 @swagger_auto_schema(
@@ -153,6 +157,7 @@ def unlike_item(request):
 
 class RecommendedItemsAPIView(APIView):
     pagination_class = ItemPaginator
+    permission_classes = [DoesHaveLikes]
 
     @swagger_auto_schema(
         responses={
@@ -172,6 +177,8 @@ class RecommendedItemsAPIView(APIView):
 
 
 class StatisticAPIView(APIView):
+    permission_classes = [DoesHaveLikes]
+
     @swagger_auto_schema(
         responses={
             200: StatisticSerializer(),

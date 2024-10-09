@@ -15,8 +15,8 @@ urlpatterns = [
     path('user-items/', UserItemListAPIView.as_view(), name='api_user_item_list'),
     path('item/create/', ItemCreateAPIView.as_view(), name='api_item_create'),
 
-    path('like-item/<int:pk>/', like_item, name='api_item_like'),
-    path('unlike-item/<int:pk>/', unlike_item, name='api_item_unlike'),
+    path('like-item/', like_item, name='api_item_like'),
+    path('unlike-item/', unlike_item, name='api_item_unlike'),
 
     path('user-likes/', UserLikeListAPIView.as_view(), name='api_user_like_list'),
 

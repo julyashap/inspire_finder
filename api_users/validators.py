@@ -6,5 +6,5 @@ class PhoneValidator:
     def __call__(self, value):
         phone = dict(value).get('phone')
 
-        if not re.match(r'^(8\d{10}|\+7\d{10})$', phone):
+        if phone and not re.match(r'^(8\d{10}|\+7\d{10})$', phone):
             raise ValidationError('Номер телефона должен начинаться с "+7" или "8" и содержать далее 10 цифр!')

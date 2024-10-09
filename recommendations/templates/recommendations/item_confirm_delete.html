@@ -1,0 +1,23 @@
+{% extends "recommendations/base.html" %}
+{% block content %}
+<div class="col-12">
+    <div class="row d-flex justify-content-center align-items-center text-center">
+        <div class="col-6">
+            <div class="card">
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <p>Вы действительно хотите удалить {{ object.name }}</p>
+                        <button type="submit" class="btn btn-success">
+                            Подтвердить
+                        </button>
+                        <a href="{% url 'recommendations:user_item_list' %}" class="btn btn-danger">
+                            Отмена
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'recommendations/base.html' %}
+{% block content %}
+{% load crispy_forms_tags %}
+<div class="col-12">
+    <div class="row d-flex justify-content-center align-items-center text-center">
+        <div class="col-6">
+            <div class="card">
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        {{ form|crispy }}
+
+                        {% if not object.is_authenticated %}
+                        <button type="submit" class="btn btn-primary">
+                            Зарегистрироваться
+                        </button>
+                        {% else %}
+                        <button type="submit" class="btn btn-primary">
+                            Сохранить
+                        </button>
+                        {% endif %}
+                    </form>
+                    {% if not object.is_authenticated %}
+                    <p style="margin-top: 15px">Уже есть аккаунт?
+                        <a href="{% url 'users:user_login' %}"
+                           class="link-success link-offset-2 link-underline-opacity-25
+                           link-underline-opacity-100-hover">Войти!</a>
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

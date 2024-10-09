@@ -1,0 +1,22 @@
+<div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
+    <h5 class="my-0 mr-md-auto font-weight-normal">InspireFinder</h5>
+    <nav class="ms-5">
+        <a class="p-2 btn btn-primary" href="{% url 'recommendations:category_list' %}">Главная</a>
+        {% if user.is_authenticated %}
+        <a class="p-2 btn btn-primary" href="{% url 'users:user_detail' user.pk %}">Профиль</a>
+        <a class="p-2 btn btn-danger" href="{% url 'users:user_logout' %}">Выход</a>
+        <a class="p-2 btn btn-outline-primary" href="{% url 'recommendations:user_item_list' %}">
+            Мои предпочтения
+        </a>
+        <a class="p-2 btn btn-outline-primary" href="{% url 'recommendations:user_like_list' %}">
+            Выбранные предпочтения
+        </a>
+        {% else %}
+        <a class="p-2 btn btn-primary" href="{% url 'users:user_login' %}">Вход</a>
+        <a class="p-2 btn btn-primary" href="{% url 'users:user_registration' %}">Регистрация</a>
+        {% endif %}
+        {% if user.like_set.exists %}
+        <a class="p-2 btn btn-outline-primary" href="{% url 'recommendations:statistic' %}">Статистика</a>
+        {% endif %}
+    </nav>
+</div>

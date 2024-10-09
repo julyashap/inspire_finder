@@ -1,0 +1,86 @@
+[
+  {
+    "model": "users.user",
+    "pk": 1,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$F4tD8Y3t93ppTKLKF0r5UH$nKcdbhFrnQoybW1TgNHVHIn8MldgDnV6Qimwoz6bfqg=",
+      "last_login": "2024-10-07T15:40:47.996Z",
+      "is_superuser": true,
+      "first_name": "Julya",
+      "last_name": "Shapaeva",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2024-10-07T13:37:41.400Z",
+      "email": "admin@admin.ru",
+      "phone": "",
+      "avatar": "",
+      "city": null,
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "users.user",
+    "pk": 2,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$YVPgQmDGQgZ7MWQNtIqbyf$IG466c4mUDFCsG48g5VEz4LoeBpnwWuj81W3gQ345XY=",
+      "last_login": "2024-10-07T15:49:48.497Z",
+      "is_superuser": false,
+      "first_name": "",
+      "last_name": "",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2024-10-07T13:46:50Z",
+      "email": "moderator1@mod.ru",
+      "phone": "88005553535",
+      "avatar": "",
+      "city": null,
+      "groups": [
+        1
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "users.user",
+    "pk": 3,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$u7XFbVhXTpWRd0RlLcKzZp$NQU5ze9um0H5gn4LJlVG/nRUB3LE6PXu5nNc9ZUFUQM=",
+      "last_login": "2024-10-07T15:44:35.469Z",
+      "is_superuser": false,
+      "first_name": "",
+      "last_name": "",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2024-10-07T13:47:39Z",
+      "email": "moderator2@mod.ru",
+      "phone": "88005553535",
+      "avatar": "",
+      "city": null,
+      "groups": [
+        1
+      ],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "users.user",
+    "pk": 6,
+    "fields": {
+      "password": "pbkdf2_sha256$600000$4U2DNkeIyWo7N7NAvv49TJ$MfUA9z1rhEUURg0mNe8C3MkEjCX1xjh6BNGYST8fTUk=",
+      "last_login": "2024-10-07T15:52:42.620Z",
+      "is_superuser": false,
+      "first_name": "",
+      "last_name": "",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2024-10-07T15:52:40.678Z",
+      "email": "shap@shap.ru",
+      "phone": "89171948052",
+      "avatar": "",
+      "city": null,
+      "groups": [],
+      "user_permissions": []
+    }
+  }
+]

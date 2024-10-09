@@ -1,0 +1,47 @@
+{% extends "recommendations/base.html" %}
+{% block content %}
+<div class="mb-5 d-flex justify-content-center align-items-center">
+    <a class="btn btn-primary" href="{% url 'recommendations:item_create' %}">Создать предпочтение</a>
+</div>
+<div class="row text-center">
+    {% if object_list %}
+    {% for object in object_list %}
+    <div class="col-4">
+        {% if object.is_published %}
+        <div class="card mb-4 box-shadow">
+            {% else %}
+            <div class="card mb-4 box-shadow text-body-tertiary">
+                {% endif %}
+                <div class="card-header">
+                    <h4 class="my-0 font-weight-normal">{{ object.name }}</h4>
+                </div>
+                <div class="card-body">
+                    <h5>{{ object.description|slice:100 }}...</h5>
+                    <div class="btn-group" role="group">
+                        <a class="btn btn-outline-primary" href="{% url 'recommendations:item_detail' object.pk %}">
+                            Посмотреть
+                        </a>
+                        <a class="btn btn-outline-primary" href="{% url 'recommendations:item_update' object.pk %}">
+                            Редактировать
+                        </a>
+                        <a class="btn btn-outline-primary" href="{% url 'recommendations:item_delete' object.pk %}">
+                            Удалить
+                        </a>
+                    </div>
+                    {% if object.is_published %}
+                    <h6 style="padding-top: 10px">{{ object.count_likes }} ❤</h6>
+                    {% else %}
+                    <h6 style="padding-top: 10px">Элемент модерируется...</h6>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div>
+            <p>У вас пока нет предпочтений 😔</p>
+            <a class="btn btn-outline-primary" href="{% url 'recommendations:category_list' %}">Вернуться на главную</a>
+        </div>
+        {% endif %}
+    </div>
+    {% endblock %}

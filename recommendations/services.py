@@ -16,9 +16,9 @@ def create_likes_graph():
     likes = Like.objects.all()
 
     for like in likes:
-        G.add_node(like.user.pk, type='user')
+        G.add_node(like.user.email, type='user')
         G.add_node(like.item.pk, type='item')
-        G.add_edge(like.user.pk, like.item.pk)
+        G.add_edge(like.user.email, like.item.pk)
 
     return G
 
@@ -35,31 +35,31 @@ def page_rank_alg(graph, nodes):
     return nodes_popularity
 
 
-def kNN_alg(graph, user_pk, current_user_items, k):
+def kNN_alg(graph, user_email, current_user_items, k):
     """Функция реализации алгоритма k-Nearest Neighbors для нахождения k-ближайших пользователей"""
 
     same_interest_users = []
     for item in current_user_items:
         item_users = list(graph.neighbors(item))
-        item_users.remove(user_pk)
+        item_users.remove(user_email)
         same_interest_users.extend(item_users)
 
     return list(set(same_interest_users))[:k]
 
 
-def get_same_interest_users(user_pk, k):
+def get_same_interest_users(user_email, k):
     graph = create_likes_graph()
-    current_user_items = list(graph.neighbors(user_pk))
+    current_user_items = list(graph.neighbors(user_email))
 
-    same_interest_users = kNN_alg(graph, user_pk, current_user_items, k)
+    same_interest_users = kNN_alg(graph, user_email, current_user_items, k)
 
     return graph, current_user_items, same_interest_users
 
 
-def collaborative_filtering_alg(user_pk, k=5):
+def collaborative_filtering_alg(user_email, k=5):
     """Функция реализации алгоритма коллаборативной фильтрации для расчета рекомендаций пользователю"""
 
-    graph, current_user_items, same_interest_users = get_same_interest_users(user_pk, k)
+    graph, current_user_items, same_interest_users = get_same_interest_users(user_email, k)
 
     recommended_items = []
     for user in same_interest_users:
@@ -70,8 +70,8 @@ def collaborative_filtering_alg(user_pk, k=5):
     return list(set(recommended_items))
 
 
-def get_statistics(user_pk, k=10, count_items=10):
-    graph, _, same_interest_users = get_same_interest_users(user_pk, k)
+def get_statistics(user_email, k=10, count_items=10):
+    graph, _, same_interest_users = get_same_interest_users(user_email, k)
 
     items = [node for node, attrs in graph.nodes(data=True) if attrs.get('type') == 'item']
     most_popular_items = page_rank_alg(graph, items)[:count_items]

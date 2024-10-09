@@ -14,10 +14,21 @@
                     <a class="btn btn-outline-primary" href="{% url 'recommendations:item_detail' object.pk %}">
                         Посмотреть
                     </a>
-                    {% if not object.pk in user_likes_list %}
+                    {% if not object.pk in user_likes_list and object.count_likes %}
+                    <a class="btn btn-outline-danger" href="{% url 'recommendations:item_like' object.pk %}">
+                        {{ object.count_likes }} ❤
+                    </a>
+                    {% endif %}
+                    {% if not object.pk in user_likes_list and not object.count_likes %}
                     <a class="btn btn-outline-danger" href="{% url 'recommendations:item_like' object.pk %}">❤</a>
-                    {% else %}
-                    <a class="btn btn-danger" href="{% url 'recommendations:item_unlike' object.pk %}">❤</a>
+                    {% endif %}
+                    {% if object.pk in user_likes_list and object.count_likes %}
+                    <a class="btn btn-danger" href="{% url 'recommendations:item_unlike' object.pk %}">
+                        {{ object.count_likes }} ❤
+                    </a>
+                    {% endif %}
+                    {% if object.pk in user_likes_list and not object.count_likes %}
+                    <a class="btn btn-outline-danger" href="{% url 'recommendations:item_unlike' object.pk %}">❤</a>
                     {% endif %}
                 </div>
             </div>

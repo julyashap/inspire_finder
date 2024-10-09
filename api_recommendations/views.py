@@ -113,29 +113,29 @@ def like_item(request):
 
     item = Item.objects.get(pk=item_pk)
 
-    if item.user == request.user or Like.objects.get(user=request.user, item=item):
+    if item.user == request.user or Like.objects.filter(user=request.user, item=item):
         return Response(
             {"Error": "Вы не можете лайкать свои элементы и не можете поставить лайк второй раз!"},
             status=status.HTTP_403_FORBIDDEN
         )
 
-    if item.user != request.user:
-        like = Like.objects.create(user=request.user, item=item)
-        like.created_at = NOW
-        item.count_likes += 1
+    like = Like.objects.create(user=request.user, item=item)
+    like.created_at = NOW
+    item.count_likes += 1
 
-        item.save()
-        like.save()
+    item.save()
+    like.save()
 
-        serializer = LikeSerializer(like)
+    serializer = LikeSerializer(like)
 
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 @swagger_auto_schema(
     method='DELETE',
     responses={
         200: openapi.Response("Лайк успешно убран!"),
+        403: openapi.Response("Вы не можете убрать лайк с еще не понравившегося элемента!"),
     },
     request_body=LikeRequestSerializer()
 )
@@ -147,6 +147,11 @@ def unlike_item(request):
 
     item = Item.objects.get(pk=item_pk)
     like = Like.objects.filter(user=request.user, item=item)
+
+    if not like:
+        return Response({"Error": "Вы не можете убрать лайк с еще не понравившегося элемента!"},
+                        status=status.HTTP_403_FORBIDDEN)
+
     like.delete()
 
     item.count_likes -= 1
@@ -165,7 +170,7 @@ class RecommendedItemsAPIView(APIView):
         }
     )
     def get(self, request):
-        recommended_items_ids = collaborative_filtering_alg(request.user.pk)
+        recommended_items_ids = collaborative_filtering_alg(request.user.email)
         recommended_items = Item.objects.filter(pk__in=recommended_items_ids).order_by('-count_likes')
 
         paginator = self.pagination_class()
@@ -185,9 +190,9 @@ class StatisticAPIView(APIView):
         }
     )
     def get(self, request):
-        same_interest_users, most_popular_items = get_statistics(request.user.pk)
+        same_interest_users, most_popular_items = get_statistics(request.user.email)
 
-        same_interest_users = User.objects.filter(pk__in=same_interest_users)
+        same_interest_users = User.objects.filter(email__in=same_interest_users)
         most_popular_items = Item.objects.filter(pk__in=most_popular_items)
 
         statistic_data = {

@@ -114,7 +114,7 @@ class ItemUpdateView(mixins.LoginRequiredMixin, mixins.UserPassesTestMixin, gene
     form_class = ItemForm
 
     def test_func(self):
-        return self.request.user == self.object.user
+        return self.request.user == self.get_object().user
 
     def form_valid(self, form):
         item = form.save()
@@ -135,7 +135,7 @@ class ItemDeleteView(mixins.LoginRequiredMixin, mixins.UserPassesTestMixin, gene
 
 
 class LikeErrorView(mixins.LoginRequiredMixin, generic.TemplateView):
-    template_name = 'recommanedations/like_error.html'
+    template_name = 'recommendations/like_error.html'
 
 
 @login_required
@@ -144,7 +144,7 @@ def like_item(request, pk):
 
     item = Item.objects.get(pk=pk)
 
-    if item.user == request.user or Like.objects.get(user=request.user, item=item) or not item.is_published:
+    if item.user == request.user or Like.objects.filter(user=request.user, item=item) or not item.is_published:
         return redirect(reverse('recommendations:like_error'))
 
     like = Like.objects.create(user=request.user, item=item)
@@ -154,7 +154,7 @@ def like_item(request, pk):
     item.save()
     like.save()
 
-    return redirect(previous_page)
+    return redirect(previous_page) if previous_page else redirect(reverse('recommendations:category_list'))
 
 
 @login_required
@@ -163,16 +163,22 @@ def unlike_item(request, pk):
 
     item = Item.objects.get(pk=pk)
     like = Like.objects.filter(user=request.user, item=item)
+
+    if not like:
+        return redirect(reverse('recommendations:like_error'))
+
     like.delete()
 
     item.count_likes -= 1
     item.save()
 
-    if previous_page == request.build_absolute_uri(reverse('recommendations:statistic')) or \
-            previous_page == request.build_absolute_uri(reverse('recommendations:item_recommended')):
+    if previous_page and (
+            previous_page == request.build_absolute_uri(reverse('recommendations:statistic')) or
+            previous_page == request.build_absolute_uri(reverse('recommendations:item_recommended'))
+    ):
         return redirect(reverse('recommendations:category_list'))
 
-    return redirect(previous_page)
+    return redirect(previous_page) if previous_page else redirect(reverse('recommendations:category_list'))
 
 
 class RecommendedItemView(mixins.LoginRequiredMixin, mixins.UserPassesTestMixin, generic.TemplateView):
@@ -184,7 +190,7 @@ class RecommendedItemView(mixins.LoginRequiredMixin, mixins.UserPassesTestMixin,
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        recommended_items_ids = collaborative_filtering_alg(self.request.user.pk)
+        recommended_items_ids = collaborative_filtering_alg(self.request.user.email)
         recommended_items = Item.objects.filter(pk__in=recommended_items_ids).order_by('-count_likes')
 
         context['object_list'] = recommended_items
@@ -202,8 +208,8 @@ class StatisticView(mixins.LoginRequiredMixin, mixins.UserPassesTestMixin, gener
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        same_interest_users, most_popular_items = get_statistics(self.request.user.pk)
-        same_interest_users = User.objects.filter(pk__in=same_interest_users)
+        same_interest_users, most_popular_items = get_statistics(self.request.user.email)
+        same_interest_users = User.objects.filter(email__in=same_interest_users)
         most_popular_items = Item.objects.filter(pk__in=most_popular_items).order_by('-count_likes')
 
         context['same_interest_users'] = same_interest_users

@@ -76,7 +76,7 @@ class UserUpdateView(mixins.LoginRequiredMixin, mixins.UserPassesTestMixin, gene
 
 class UserDeleteView(mixins.LoginRequiredMixin, mixins.UserPassesTestMixin, generic.DeleteView):
     model = User
-    success_url = reverse_lazy('recommendations:item_list')
+    success_url = reverse_lazy('recommendations:category_list')
 
     def test_func(self):
         return self.request.user == self.get_object()

@@ -14,6 +14,8 @@ from .services import get_statistics, collaborative_filtering_alg, get_same_inte
 
 
 class ItemCategoryTestCase(TestCase):
+    """Класс тестирования контроллеров моделей Item и Category"""
+
     def setUp(self):
         self.user_owner = User.objects.create(email='user_owner@test.com', password='password', phone="88005553535")
         self.user = User.objects.create(email='user@test.com', password='password', phone="88005553535")
@@ -191,6 +193,8 @@ class ItemCategoryTestCase(TestCase):
 
 
 class LikeTestCase(TestCase):
+    """Класс тестирования контроллеров модели Like"""
+
     def setUp(self):
         self.user_owner = User.objects.create(email='user_owner@test.com', password='password', phone="88005553535")
         self.user = User.objects.create(email='user@test.com', password='password', phone="88005553535")
@@ -287,6 +291,8 @@ class LikeTestCase(TestCase):
 
 
 class CollaborativeFilteringTestCase(TestCase):
+    """Класс тестирования алгоритмов PageRank, коллаборативной фильтрации и kNN"""
+
     def setUp(self):
         self.user_1 = User.objects.create(email='user_1@test.com', password='password', phone="88005553535")
         self.user_2 = User.objects.create(email='user_2@test.com', password='password', phone="88005553535")
@@ -361,16 +367,22 @@ class CollaborativeFilteringTestCase(TestCase):
         self.assertGreater(len(recommended_items), 0)
 
     def test_get_statistics(self):
+        self.item_1.count_likes = 2
+        self.item_1.save()
+
+        self.item_2.count_likes = 2
+        self.item_2.save()
+
+        self.item_3.count_likes = 1
+        self.item_3.save()
+
         same_interest_users, most_popular_items = get_statistics(self.user_1.email)
 
         self.assertGreater(len(same_interest_users), 0)
         self.assertIn(self.user_2.email, same_interest_users)
         self.assertIn(self.user_3.email, same_interest_users)
 
-        self.assertGreater(len(most_popular_items), 0)
-        self.assertIn(self.item_1.pk, most_popular_items)
-        self.assertIn(self.item_2.pk, most_popular_items)
-        self.assertIn(self.item_3.pk, most_popular_items)
+        self.assertEqual(most_popular_items.count(), 3)
 
     def test_user_likes_count(self):
         user_likes_count = Like.objects.filter(user=self.user_1).count()

@@ -6,6 +6,8 @@ User = get_user_model()
 
 
 class UserTestCase(TestCase):
+    """Класс тестирования контроллеров модели User"""
+
     def setUp(self):
         self.user = User.objects.create(email="test@test.com", password="password", phone="81234567890")
         self.user.is_active = True

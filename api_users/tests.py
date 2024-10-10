@@ -6,6 +6,8 @@ from api_users.serializers import UserSerializer, AnotherUserSerializer
 
 
 class UserAPITestCase(APITestCase):
+    """Класс тестирования API-контроллеров модели User"""
+
     def setUp(self):
         self.user = User.objects.create(email="user@test.com", phone="88005553535", password="test_password")
         self.another_user = User.objects.create(email="another_user@test.com", phone="88005553535",

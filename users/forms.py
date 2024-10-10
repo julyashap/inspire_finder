@@ -5,6 +5,8 @@ from django import forms
 
 
 class UserRegistrationForm(auth_forms.UserCreationForm):
+    """Класс формы для регистрации (создания) пользователя"""
+
     class Meta:
         model = User
         fields = ('email', 'phone', 'password1', 'password2',)
@@ -25,6 +27,8 @@ class UserRegistrationForm(auth_forms.UserCreationForm):
 
 
 class UserUpdateForm(auth_forms.UserChangeForm):
+    """Класс формы для обновления данных пользователя"""
+
     class Meta:
         model = User
         fields = ('first_name', 'last_name', 'email', 'phone', 'avatar', 'city',)
@@ -46,4 +50,6 @@ class UserUpdateForm(auth_forms.UserChangeForm):
 
 
 class PhoneConfirmForm(forms.Form):
+    """Класс формы для ввода кода подтверждения с телефона"""
+
     code = forms.CharField(max_length=4, label='Код подтверждения')

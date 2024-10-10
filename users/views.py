@@ -11,6 +11,8 @@ from django.contrib.auth.views import LoginView as BaseLoginView, LogoutView as 
 
 
 class RegistrationView(generic.CreateView):
+    """Контроллер для получения страницы регистрации пользователя"""
+
     model = User
     success_url = reverse_lazy('users:phone_confirm')
     form_class = UserRegistrationForm
@@ -30,6 +32,8 @@ class RegistrationView(generic.CreateView):
 
 
 def phone_confirm(request):
+    """Контроллер для получения страницы подтверждения номера телефона"""
+
     if request.method == 'POST':
         form = PhoneConfirmForm(request.POST)
         if form.is_valid():
@@ -45,14 +49,20 @@ def phone_confirm(request):
 
 
 class LoginView(BaseLoginView):
+    """Контроллер для получения страницы входа пользователя в систему"""
+
     template_name = 'users/user_login.html'
 
 
 class LogoutView(BaseLogoutView):
+    """Контроллер для выхода пользователя из системы"""
+
     pass
 
 
 class UserDetailView(mixins.LoginRequiredMixin, generic.DetailView):
+    """Контроллер для получения страницы просмотра пользователя"""
+
     model = User
 
     def get_context_data(self, **kwargs):
@@ -64,6 +74,8 @@ class UserDetailView(mixins.LoginRequiredMixin, generic.DetailView):
 
 
 class UserUpdateView(mixins.LoginRequiredMixin, mixins.UserPassesTestMixin, generic.UpdateView):
+    """Контроллер для получения страницы обновления пользователя"""
+
     model = User
     form_class = UserUpdateForm
 
@@ -75,6 +87,8 @@ class UserUpdateView(mixins.LoginRequiredMixin, mixins.UserPassesTestMixin, gene
 
 
 class UserDeleteView(mixins.LoginRequiredMixin, mixins.UserPassesTestMixin, generic.DeleteView):
+    """Контроллер для получения страницы удаления пользователя"""
+
     model = User
     success_url = reverse_lazy('recommendations:category_list')
 

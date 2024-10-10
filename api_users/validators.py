@@ -3,6 +3,8 @@ from rest_framework.exceptions import ValidationError
 
 
 class PhoneValidator:
+    """Класс валидатора номера телефона"""
+
     def __call__(self, value):
         phone = dict(value).get('phone')
 

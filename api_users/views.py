@@ -6,18 +6,24 @@ from users.models import User
 
 
 class UserCreateAPIView(generics.CreateAPIView):
+    """API-контроллер для создания пользователя"""
+
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
 
 
 class UserUpdateAPIView(generics.UpdateAPIView):
+    """API-контроллер для обновления пользователя"""
+
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsCurrentUser]
 
 
 class UserRetrieveAPIView(generics.RetrieveAPIView):
+    """API-контроллер для просмотра пользователя"""
+
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
@@ -28,6 +34,8 @@ class UserRetrieveAPIView(generics.RetrieveAPIView):
 
 
 class UserDestroyAPIView(generics.DestroyAPIView):
+    """API-контроллер для удаления пользователя"""
+
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsCurrentUser]

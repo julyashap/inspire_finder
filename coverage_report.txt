@@ -11,7 +11,7 @@ api_recommendations\serializers.py                                              
 api_recommendations\tests.py                                                              167      0   100%
 api_recommendations\urls.py                                                                 5      0   100%
 api_recommendations\validators.py                                                          10      0   100%
-api_recommendations\views.py                                                              121      0   100%
+api_recommendations\views.py                                                              120      0   100%
 api_users\__init__.py                                                                       0      0   100%
 api_users\admin.py                                                                          1      0   100%
 api_users\apps.py                                                                           4      0   100%
@@ -38,10 +38,10 @@ recommendations\migrations\0002_initial.py                                      
 recommendations\migrations\0003_category_item_count_likes_item_created_at_and_more.py       6      0   100%
 recommendations\migrations\__init__.py                                                      0      0   100%
 recommendations\models.py                                                                  35      3    91%
-recommendations\services.py                                                                46      0   100%
-recommendations\tests.py                                                                  235      0   100%
+recommendations\services.py                                                                74     10    86%
+recommendations\tests.py                                                                  238      0   100%
 recommendations\urls.py                                                                     6      0   100%
-recommendations\views.py                                                                  148      1    99%
+recommendations\views.py                                                                  148      8    95%
 users\__init__.py                                                                           0      0   100%
 users\admin.py                                                                              6      0   100%
 users\apps.py                                                                               4      0   100%
@@ -55,4 +55,4 @@ users\tests.py                                                                  
 users\urls.py                                                                               5      0   100%
 users\views.py                                                                             55      3    95%
 -----------------------------------------------------------------------------------------------------------
-TOTAL                                                                                    1238     26    98%
+TOTAL                                                                                    1268     43    97%

@@ -7,6 +7,8 @@ register = template.Library()
 
 @register.filter()
 def media_path(path):
+    """Фильтр для создания абсолютного пути до media для графики"""
+
     if path:
         return os.path.join(MEDIA_URL, str(path))
     return "#"

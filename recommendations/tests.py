@@ -361,16 +361,22 @@ class CollaborativeFilteringTestCase(TestCase):
         self.assertGreater(len(recommended_items), 0)
 
     def test_get_statistics(self):
+        self.item_1.count_likes = 2
+        self.item_1.save()
+
+        self.item_2.count_likes = 2
+        self.item_2.save()
+
+        self.item_3.count_likes = 1
+        self.item_3.save()
+
         same_interest_users, most_popular_items = get_statistics(self.user_1.email)
 
         self.assertGreater(len(same_interest_users), 0)
         self.assertIn(self.user_2.email, same_interest_users)
         self.assertIn(self.user_3.email, same_interest_users)
 
-        self.assertGreater(len(most_popular_items), 0)
-        self.assertIn(self.item_1.pk, most_popular_items)
-        self.assertIn(self.item_2.pk, most_popular_items)
-        self.assertIn(self.item_3.pk, most_popular_items)
+        self.assertEqual(most_popular_items.count(), 3)
 
     def test_user_likes_count(self):
         user_likes_count = Like.objects.filter(user=self.user_1).count()

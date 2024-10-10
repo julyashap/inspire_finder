@@ -56,9 +56,9 @@ class ItemListAPIView(generics.ListAPIView):
 
     def get_queryset(self):
         if self.request.user.is_authenticated:
-            self.queryset = Item.objects.exclude(user=self.request.user).order_by('-count_likes')
+            self.queryset = Item.objects.exclude(user=self.request.user).order_by('?')
         else:
-            self.queryset = Item.objects.order_by('-count_likes')
+            self.queryset = Item.objects.order_by('?')
 
         return super().get_queryset()
 
@@ -193,7 +193,6 @@ class StatisticAPIView(APIView):
         same_interest_users, most_popular_items = get_statistics(request.user.email)
 
         same_interest_users = User.objects.filter(email__in=same_interest_users)
-        most_popular_items = Item.objects.filter(pk__in=most_popular_items)
 
         statistic_data = {
             'users': same_interest_users,

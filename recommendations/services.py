@@ -1,8 +1,10 @@
 import networkx as nx
 import pytz
+from django.core.cache import cache
+
 from config import settings
 from datetime import datetime
-from recommendations.models import Like
+from recommendations.models import Like, Item, Category
 
 ZONE = pytz.timezone(settings.TIME_ZONE)
 NOW = datetime.now(ZONE)
@@ -63,7 +65,7 @@ def collaborative_filtering_alg(user_email, k=5):
 
     recommended_items = []
     for user in same_interest_users:
-        user_items = list(graph.neighbors(user))
+        user_items = graph.neighbors(user)
         user_items = list(set(user_items) - set(current_user_items))
         recommended_items.extend(user_items)
 
@@ -71,9 +73,51 @@ def collaborative_filtering_alg(user_email, k=5):
 
 
 def get_statistics(user_email, k=10, count_items=10):
-    graph, _, same_interest_users = get_same_interest_users(user_email, k)
+    _, _, same_interest_users = get_same_interest_users(user_email, k)
 
-    items = [node for node, attrs in graph.nodes(data=True) if attrs.get('type') == 'item']
-    most_popular_items = page_rank_alg(graph, items)[:count_items]
+    if settings.CACHE_ENABLED:
+        key = f'most_popular_items_{user_email}'
+        most_popular_items = cache.get(key)
+
+        if most_popular_items is None:
+            most_popular_items = Item.objects.filter(count_likes__gt=0).order_by('-count_likes')[:count_items]
+            cache.set(key, most_popular_items)
+    else:
+        most_popular_items = Item.objects.filter(count_likes__gt=0).order_by('-count_likes')[:count_items]
 
     return same_interest_users, most_popular_items
+
+
+def cache_category_list():
+    if settings.CACHE_ENABLED:
+        key = 'category_list'
+        category_list = cache.get(key)
+
+        if category_list is None:
+            category_list = Category.objects.all()
+            cache.set(key, category_list)
+    else:
+        category_list = Category.objects.all()
+
+    return category_list
+
+
+def cache_item_list(category_published_items, user=None):
+    if settings.CACHE_ENABLED:
+        key = 'item_list'
+        item_list = cache.get(key)
+
+        if item_list is None:
+            if user is not None:
+                item_list = category_published_items.exclude(user=user).order_by('?')
+            else:
+                item_list = category_published_items.order_by('?')
+            cache.set(key, item_list)
+
+        else:
+            if user is not None:
+                item_list = category_published_items.exclude(user=user).order_by('?')
+            else:
+                item_list = category_published_items.order_by('?')
+
+    return item_list

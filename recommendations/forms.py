@@ -6,6 +6,8 @@ STOP_WORDS = ['казино', 'криптовалюта', 'крипта', 'би�
 
 
 class ItemForm(forms.ModelForm):
+    """Класс формы для создания и обновления экземпляров модели Item"""
+
     class Meta:
         model = Item
         fields = ('name', 'description', 'picture', 'category',)
@@ -30,6 +32,8 @@ class ItemForm(forms.ModelForm):
 
 
 class ContactsForm(forms.Form):
+    """Класс формы для отправки сообщения модераторам"""
+
     email = forms.EmailField(label='Введите Ваш email')
     message = forms.CharField(
         label='',

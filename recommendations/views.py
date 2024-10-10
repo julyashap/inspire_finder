@@ -13,6 +13,8 @@ from users.models import User
 
 
 class CategoryListView(generic.ListView):
+    """Контроллер для получения страницы списка экземпляров модели Category"""
+
     model = Category
 
     def get_queryset(self):
@@ -27,6 +29,8 @@ class CategoryListView(generic.ListView):
 
 
 class UserItemListView(mixins.LoginRequiredMixin, generic.ListView):
+    """Контроллер для получения страницы списка элементов текущего пользователя"""
+
     model = Item
     template_name = 'recommendations/user_item_list.html'
 
@@ -36,6 +40,8 @@ class UserItemListView(mixins.LoginRequiredMixin, generic.ListView):
 
 
 class UserLikeListView(mixins.LoginRequiredMixin, generic.ListView):
+    """Контроллер для получения страницы списка понравившихся элементов текущего пользователя"""
+
     model = Item
     template_name = 'recommendations/user_like_list.html'
 
@@ -49,6 +55,8 @@ class UserLikeListView(mixins.LoginRequiredMixin, generic.ListView):
 
 
 class ItemListView(generic.ListView):
+    """Контроллер для получения страницы списка элементов выбранной категории"""
+
     model = Item
 
     def get_queryset(self):
@@ -87,6 +95,8 @@ class ItemListView(generic.ListView):
 
 
 class ItemDetailView(mixins.UserPassesTestMixin, generic.DetailView):
+    """Контроллер для получения одного элемента"""
+
     model = Item
 
     def test_func(self):
@@ -98,6 +108,8 @@ class ItemDetailView(mixins.UserPassesTestMixin, generic.DetailView):
 
 
 class ItemCreateView(mixins.LoginRequiredMixin, generic.CreateView):
+    """Контроллер для получения страницы создания элемента"""
+
     model = Item
     form_class = ItemForm
     success_url = reverse_lazy('recommendations:user_item_list')
@@ -111,6 +123,8 @@ class ItemCreateView(mixins.LoginRequiredMixin, generic.CreateView):
 
 
 class ItemUpdateView(mixins.LoginRequiredMixin, mixins.UserPassesTestMixin, generic.UpdateView):
+    """Контроллер для получения страницы обновления элемента"""
+
     model = Item
     form_class = ItemForm
 
@@ -128,6 +142,8 @@ class ItemUpdateView(mixins.LoginRequiredMixin, mixins.UserPassesTestMixin, gene
 
 
 class ItemDeleteView(mixins.LoginRequiredMixin, mixins.UserPassesTestMixin, generic.DeleteView):
+    """Контроллер для получения страницы удаления элемента"""
+
     model = Item
     success_url = reverse_lazy('recommendations:user_item_list')
 
@@ -136,11 +152,15 @@ class ItemDeleteView(mixins.LoginRequiredMixin, mixins.UserPassesTestMixin, gene
 
 
 class LikeErrorView(mixins.LoginRequiredMixin, generic.TemplateView):
+    """Контроллер для получения страницы ошибки лайка"""
+
     template_name = 'recommendations/like_error.html'
 
 
 @login_required
 def like_item(request, pk):
+    """Контроллер для получения страницы создания лайка"""
+
     previous_page = request.META.get('HTTP_REFERER')
 
     item = Item.objects.get(pk=pk)
@@ -160,6 +180,8 @@ def like_item(request, pk):
 
 @login_required
 def unlike_item(request, pk):
+    """Контроллер для получения страницы удаления лайка"""
+
     previous_page = request.META.get('HTTP_REFERER')
 
     item = Item.objects.get(pk=pk)
@@ -183,6 +205,8 @@ def unlike_item(request, pk):
 
 
 class RecommendedItemView(mixins.LoginRequiredMixin, mixins.UserPassesTestMixin, generic.TemplateView):
+    """Контроллер для получения страницы списка рекомендованных элементов"""
+
     template_name = 'recommendations/item_recommended.html'
 
     def test_func(self):
@@ -201,6 +225,8 @@ class RecommendedItemView(mixins.LoginRequiredMixin, mixins.UserPassesTestMixin,
 
 
 class StatisticView(mixins.LoginRequiredMixin, mixins.UserPassesTestMixin, generic.TemplateView):
+    """Контроллер для получения страницы статистики"""
+
     template_name = 'recommendations/statistic.html'
 
     def test_func(self):
@@ -220,6 +246,8 @@ class StatisticView(mixins.LoginRequiredMixin, mixins.UserPassesTestMixin, gener
 
 
 def get_contacts(request):
+    """Контроллер для получения страницы с обратной связью"""
+
     if request.method == 'POST':
         form = ContactsForm(request.POST)
 

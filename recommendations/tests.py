@@ -14,6 +14,8 @@ from .services import get_statistics, collaborative_filtering_alg, get_same_inte
 
 
 class ItemCategoryTestCase(TestCase):
+    """Класс тестирования контроллеров моделей Item и Category"""
+
     def setUp(self):
         self.user_owner = User.objects.create(email='user_owner@test.com', password='password', phone="88005553535")
         self.user = User.objects.create(email='user@test.com', password='password', phone="88005553535")
@@ -191,6 +193,8 @@ class ItemCategoryTestCase(TestCase):
 
 
 class LikeTestCase(TestCase):
+    """Класс тестирования контроллеров модели Like"""
+
     def setUp(self):
         self.user_owner = User.objects.create(email='user_owner@test.com', password='password', phone="88005553535")
         self.user = User.objects.create(email='user@test.com', password='password', phone="88005553535")
@@ -287,6 +291,8 @@ class LikeTestCase(TestCase):
 
 
 class CollaborativeFilteringTestCase(TestCase):
+    """Класс тестирования алгоритмов PageRank, коллаборативной фильтрации и kNN"""
+
     def setUp(self):
         self.user_1 = User.objects.create(email='user_1@test.com', password='password', phone="88005553535")
         self.user_2 = User.objects.create(email='user_2@test.com', password='password', phone="88005553535")

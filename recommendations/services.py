@@ -50,6 +50,8 @@ def kNN_alg(graph, user_email, current_user_items, k):
 
 
 def get_same_interest_users(user_email, k):
+    """Функция получения пользователей с похожими интересами"""
+
     graph = create_likes_graph()
     current_user_items = list(graph.neighbors(user_email))
 
@@ -73,6 +75,8 @@ def collaborative_filtering_alg(user_email, k=5):
 
 
 def get_statistics(user_email, k=10, count_items=10):
+    """Функция для получения статистики"""
+
     _, _, same_interest_users = get_same_interest_users(user_email, k)
 
     if settings.CACHE_ENABLED:
@@ -89,6 +93,8 @@ def get_statistics(user_email, k=10, count_items=10):
 
 
 def cache_category_list():
+    """Функция кеширования списка объектов модели Category"""
+
     if settings.CACHE_ENABLED:
         key = 'category_list'
         category_list = cache.get(key)
@@ -103,6 +109,8 @@ def cache_category_list():
 
 
 def cache_item_list(category_published_items, user=None):
+    """Функция кеширования списка объектов модели Item"""
+
     if settings.CACHE_ENABLED:
         key = 'item_list'
         item_list = cache.get(key)

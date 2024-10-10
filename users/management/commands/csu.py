@@ -3,6 +3,8 @@ from users.models import User
 
 
 class Command(BaseCommand):
+    """Класс команды создания суперпользователя"""
+
     def handle(self, *args, **options):
         superuser = User.objects.create(
             email='admin@admin.ru',

@@ -7,7 +7,8 @@ from django.views import generic
 from config import settings
 from recommendations.forms import ItemForm, ContactsForm
 from recommendations.models import Item, Like, Category
-from recommendations.services import collaborative_filtering_alg, NOW, get_statistics
+from recommendations.services import collaborative_filtering_alg, NOW, get_statistics, cache_category_list, \
+    cache_item_list
 from users.models import User
 
 
@@ -19,6 +20,8 @@ class CategoryListView(generic.ListView):
 
         if query:
             self.queryset = Category.objects.filter(name__icontains=query)
+        else:
+            self.queryset = cache_category_list()
 
         return super().get_queryset()
 
@@ -62,16 +65,14 @@ class ItemListView(generic.ListView):
                     filter(name__icontains=query). \
                     exclude(user=self.request.user).order_by('-count_likes')
             else:
-                self.queryset = category_published_items. \
-                    exclude(user=self.request.user). \
-                    order_by('-count_likes')
+                self.queryset = cache_item_list(category_published_items, self.request.user)
         else:
             if query:
                 self.queryset = category_published_items. \
                     filter(name__icontains=query). \
                     order_by('-count_likes')
             else:
-                self.queryset = category_published_items
+                self.queryset = cache_item_list(category_published_items)
 
         return super().get_queryset()
 
@@ -210,7 +211,6 @@ class StatisticView(mixins.LoginRequiredMixin, mixins.UserPassesTestMixin, gener
 
         same_interest_users, most_popular_items = get_statistics(self.request.user.email)
         same_interest_users = User.objects.filter(email__in=same_interest_users)
-        most_popular_items = Item.objects.filter(pk__in=most_popular_items).order_by('-count_likes')
 
         context['same_interest_users'] = same_interest_users
         context['most_popular_items'] = most_popular_items

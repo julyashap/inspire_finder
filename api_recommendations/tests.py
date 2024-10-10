@@ -9,6 +9,8 @@ from users.models import User
 
 
 class ItemAPITestCase(APITestCase):
+    """Класс тестирования API-контроллеров модели Item"""
+
     def setUp(self) -> None:
         self.user_owner = User.objects.create(email="test_owner@test.ru", password="test_password",
                                               phone="88005553535")
@@ -188,6 +190,8 @@ class ItemAPITestCase(APITestCase):
 
 
 class LikeAPITestCase(APITestCase):
+    """Класс тестирования API-контроллеров модели Like"""
+
     def setUp(self) -> None:
         self.user_owner = User.objects.create(email="test_owner@test.ru", password="test_password",
                                               phone="88005553535")

@@ -17,6 +17,8 @@ from users.models import User
 
 
 class UserItemListAPIView(generics.ListAPIView):
+    """API-Контроллер для получения списка элементов текущего пользователя"""
+
     serializer_class = ItemSerializer
     pagination_class = ItemPaginator
 
@@ -30,6 +32,8 @@ class UserItemListAPIView(generics.ListAPIView):
 
 
 class UserLikeListAPIView(generics.ListAPIView):
+    """API-Контроллер для получения списка понравившихся элементов текущего пользователя"""
+
     serializer_class = ItemSerializer
     pagination_class = ItemPaginator
 
@@ -46,6 +50,8 @@ class UserLikeListAPIView(generics.ListAPIView):
 
 
 class ItemListAPIView(generics.ListAPIView):
+    """API-Контроллер для получения списка всех элементов"""
+
     serializer_class = ItemSerializer
     permission_classes = [AllowAny]
     pagination_class = ItemPaginator
@@ -64,12 +70,16 @@ class ItemListAPIView(generics.ListAPIView):
 
 
 class ItemRetrieveAPIView(generics.RetrieveAPIView):
+    """API-Контроллер для получения одного элемента"""
+
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
     permission_classes = [AllowAny]
 
 
 class ItemCreateAPIView(generics.CreateAPIView):
+    """API-Контроллер для создания элемента"""
+
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
 
@@ -81,6 +91,8 @@ class ItemCreateAPIView(generics.CreateAPIView):
 
 
 class ItemUpdateAPIView(generics.UpdateAPIView):
+    """API-Контроллер для обновления элемента"""
+
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
     permission_classes = [IsOwner]
@@ -92,6 +104,8 @@ class ItemUpdateAPIView(generics.UpdateAPIView):
 
 
 class ItemDestroyAPIView(generics.DestroyAPIView):
+    """API-Контроллер для удаления элемента"""
+
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
     permission_classes = [IsOwner]
@@ -107,6 +121,8 @@ class ItemDestroyAPIView(generics.DestroyAPIView):
 )
 @api_view(['POST'])
 def like_item(request):
+    """API-Контроллер для создания лайка"""
+
     serializer = LikeRequestSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     item_pk = serializer.validated_data['item']
@@ -141,6 +157,8 @@ def like_item(request):
 )
 @api_view(['DELETE'])
 def unlike_item(request):
+    """API-Контроллер для удаления лайка"""
+
     serializer = LikeRequestSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     item_pk = serializer.validated_data['item']
@@ -161,6 +179,8 @@ def unlike_item(request):
 
 
 class RecommendedItemsAPIView(APIView):
+    """API-Контроллер для получения списка рекомендованных элементов"""
+
     pagination_class = ItemPaginator
     permission_classes = [DoesHaveLikes]
 
@@ -182,6 +202,8 @@ class RecommendedItemsAPIView(APIView):
 
 
 class StatisticAPIView(APIView):
+    """API-Контроллер для получения статистики"""
+
     permission_classes = [DoesHaveLikes]
 
     @swagger_auto_schema(

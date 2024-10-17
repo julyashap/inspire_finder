@@ -122,10 +122,10 @@ def cache_item_list(category_published_items, user=None):
                 item_list = category_published_items.order_by('?')
             cache.set(key, item_list)
 
+    else:
+        if user is not None:
+            item_list = category_published_items.exclude(user=user).order_by('?')
         else:
-            if user is not None:
-                item_list = category_published_items.exclude(user=user).order_by('?')
-            else:
-                item_list = category_published_items.order_by('?')
+            item_list = category_published_items.order_by('?')
 
     return item_list

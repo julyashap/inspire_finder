@@ -25,16 +25,18 @@ def create_likes_graph():
     return G
 
 
-def page_rank_alg(graph, nodes):
-    """Функция реализации алгоритма PageRank для расчета важности узлов"""
+def page_rank_alg(graph, current_user_items, same_interest_users):
+    """Функция реализации алгоритма PageRank для расчета важности пользователей"""
 
-    nodes_popularity = {}
-    for node in nodes:
-        nodes_popularity[node] = graph.degree(node) * 0.1
+    same_users_popularity = {}
+    current_user_items = set(current_user_items)
 
-    nodes_popularity = sorted(nodes_popularity.keys(), key=nodes_popularity.get)
+    for same_user in same_interest_users:
+        same_user_items = set(graph.neighbors(same_user))
+        weight = len(current_user_items & same_user_items)
+        same_users_popularity[same_user] = weight
 
-    return nodes_popularity
+    return same_users_popularity
 
 
 def kNN_alg(graph, user_email, current_user_items, k):
@@ -46,7 +48,11 @@ def kNN_alg(graph, user_email, current_user_items, k):
         item_users.remove(user_email)
         same_interest_users.extend(item_users)
 
-    return list(set(same_interest_users))[:k]
+    same_users_popularity = page_rank_alg(graph, current_user_items, list(set(same_interest_users)))
+
+    most_same_interest_users = sorted(same_users_popularity, key=same_users_popularity.get, reverse=True)
+
+    return most_same_interest_users[:k]
 
 
 def get_same_interest_users(user_email, k):

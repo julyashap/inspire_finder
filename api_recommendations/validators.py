@@ -13,6 +13,7 @@ class StopWordsValidator:
     def __call__(self, value):
         field_content = dict(value).get(self.field)
 
-        for stop_word in STOP_WORDS:
-            if stop_word in field_content.lower() or field_content.lower() in stop_word:
-                raise ValidationError(f'Слово "{stop_word}" недопустимо!')
+        if field_content is not None:
+            for stop_word in STOP_WORDS:
+                if stop_word in field_content.lower() or field_content.lower() in stop_word:
+                    raise ValidationError(f'Слово "{stop_word}" недопустимо!')

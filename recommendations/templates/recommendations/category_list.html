@@ -3,13 +3,13 @@
 {% if user.like_set.exists %}
 <div class="text-center">
     <a style="margin-bottom: 20px" class="btn btn-outline-primary" href="{% url 'recommendations:item_recommended' %}">
-        Рассчет рекомендаций
+        Расчет рекомендаций
     </a>
 </div>
 {% else %}
 <div class="text-center">
     <a style="margin-bottom: 20px" class="btn btn-outline-secondary" href="#" data-toggle="tooltip"
-       title="Сначала лайкните что-нибудь!">Рассчет рекомендаций</a>
+       title="Сначала лайкните что-нибудь!">Расчет рекомендаций</a>
 </div>
 {% endif %}
 <form method="GET" action="{% url 'recommendations:category_list' %}">
@@ -53,7 +53,6 @@
       return new bootstrap.Tooltip(tooltipTriggerEl);
     });
   });
-
 </script>
 
 {% endblock %}
